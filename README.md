@@ -1,78 +1,150 @@
-# 内网闪传
+<div align="center">
+  <img src="assets/icon.png" width="96" alt="内网闪传图标">
 
-面向真实物理机使用的局域网文件直传桌面工具。桌面端基于 Tauri 2，负责读取本机真实网卡、选择真实目录、启动本机 HTTP 服务、保存口令哈希和执行共享策略；访客端通过局域网浏览器访问共享链接，只能进行认证后的只读预览和下载。
+  # 内网闪传
 
-## 已实现闭环
+  **把电脑里的真实文件，通过局域网安全地交付给身边设备。**
 
-- 真实网卡地址：管理端通过 `os.networkInterfaces()` 枚举本机 IPv4 网卡，不再手填虚假主机 IP。
-- 真实目录共享：通过 Electron 目录选择器绑定本机物理目录，文件列表来自 `fs.readdir/stat`。
-- 真实局域网服务：主进程启动 Express HTTP 服务，默认监听 `0.0.0.0:8787`，访问链接按当前真实网卡 IP 生成，并展示备用网卡地址。
-- 真实安全策略：共享口令使用 `crypto.scryptSync` 加盐哈希保存，访客端不接触明文口令和宿主机物理路径。
-- 真实访问控制：服务端执行 IP 白名单、桌面环境 gate、移动端访问开关、口令有效期和单客户端独占租约。
-- 认证防护：口令错误会按客户端和共享维度限速锁定，认证 Token 绑定客户端 IP 与浏览器指纹，降低爆破和复制复用风险。
-- 访问模式可选：默认独占访问，同一时间只允许一台授权电脑；也可切换为一对多下载，允许多台白名单授权电脑同时只读下载。
-- 有效期加时不中断：管理端一键加时会同步延长服务端活跃 token，访客不刷新页面也不会因此被打断下载。
-- 真实文件传输：单文件下载支持 HTTP Range 断点续传，服务端和客户端分别计算 SHA-256，校验失败会阻止自动保存。
-- 真实 ZIP 打包：多选文件/目录由服务端生成 ZIP 包并返回实际 SHA-256，不虚构压缩率或传输结果。
-- 运行期防锁屏：桌面端启动后使用 Electron `powerSaveBlocker` 阻止空闲睡眠/自动锁屏；用户手动锁定仍由系统控制。
-- 跨平台图标：`generate-icon.cjs` 生成 Windows `.ico`、通用 `.png/.svg` 和 macOS `.iconset`，Mac 上再生成 `.icns`。
+  无需账号、无需云盘、无需安装访客客户端。桌面端创建共享，访客打开加密链接或扫描二维码即可认证、预览和下载。
 
-## 本地运行
+  [English](README_EN.md) | **简体中文**
+
+  [![Release](https://img.shields.io/github/v/release/huoxuhaohaode/intranet-flash-transfer?style=flat-square)](https://github.com/huoxuhaohaode/intranet-flash-transfer/releases/latest)
+  [![Build](https://img.shields.io/github/actions/workflow/status/huoxuhaohaode/intranet-flash-transfer/release.yml?style=flat-square&label=build)](https://github.com/huoxuhaohaode/intranet-flash-transfer/actions)
+  ![Tauri](https://img.shields.io/badge/Tauri-2-24C8DB?style=flat-square&logo=tauri&logoColor=white)
+  ![Platforms](https://img.shields.io/badge/platform-macOS%20%7C%20Windows-25313C?style=flat-square)
+
+  [下载最新版](https://github.com/huoxuhaohaode/intranet-flash-transfer/releases/latest) · [查看更新记录](CHANGELOG.md) · [反馈问题](https://github.com/huoxuhaohaode/intranet-flash-transfer/issues)
+</div>
+
+<p align="center">
+  <img src="docs/images/control-center.jpg" alt="内网闪传控制端主页" width="100%">
+</p>
+
+## 它解决什么问题？
+
+临时把大文件、交付目录或内部资料传给同一网络里的另一台电脑，通常要经过聊天软件、云盘或 U 盘。内网闪传把这件事变成一条更直接的路径：
+
+1. 在桌面端选择真实文件或目录。
+2. 设置口令、有效期、访问模式和可选 IP 白名单。
+3. 复制加密链接或二维码给访客。
+4. 访客使用浏览器认证后，只读预览或下载。
+
+文件由你的电脑直接提供，不需要先上传到第三方服务器。
+
+## 主要特点
+
+| 能力 | 说明 |
+| --- | --- |
+| 真实局域网直传 | 自动识别 IPv4 网卡并启动本机 HTTP 服务，文件不经过云端中转。 |
+| 二维码与加密链接 | 每个共享生成独立访问令牌，可复制链接、全部网卡地址或保存二维码。 |
+| 口令与有效期 | 口令经 `scrypt` 加盐哈希保存，可设置 1 小时、4 小时、24 小时、7 天或永不过期。 |
+| 访问策略 | 支持精确 IP、CIDR 和通配段白名单；支持独占访问和一对多下载。 |
+| 移动端显式开关 | 手机和平板访问默认关闭，只有共享创建者主动开启后才允许访问。 |
+| 断点续传与校验 | 单文件使用 HTTP Range 续传，完成后由客户端和服务端核对 SHA-256 与文件大小。 |
+| 批量 ZIP 下载 | 访客可多选文件或目录，由桌面端实时生成 ZIP 并返回校验结果。 |
+| 只读访客页面 | 访客只能认证、预览和下载，不能上传、修改或删除宿主机文件。 |
+| 轻量桌面端 | 基于 Tauri 2、Rust 和系统 WebView，macOS 安装包约 5 MB。 |
+
+## 下载
+
+前往 [GitHub Releases](https://github.com/huoxuhaohaode/intranet-flash-transfer/releases/latest)：
+
+| 平台 | 安装包 | 当前架构 |
+| --- | --- | --- |
+| macOS | DMG | Apple Silicon / `aarch64` |
+| Windows | NSIS EXE | 64 位 / `x64` |
+
+> macOS 与 Windows 安装包目前使用自动化构建，未配置商业代码签名证书。系统首次运行时可能显示未知开发者或 SmartScreen 提示。
+
+## 使用流程
+
+### 1. 创建共享
+
+选择访问网卡和端口，再选择本机文件或目录。设置共享名称、访问口令、有效期和访问策略。
+
+### 2. 分享入口
+
+控制端会生成真实局域网链接与二维码。多网卡设备还可以一次复制全部可用地址。
+
+### 3. 访客下载
+
+访客在同一局域网或可信 VPN 中打开链接，输入口令后查看文件列表。单文件支持断点续传，多选项目支持 ZIP 下载。
+
+### 4. 查看结果
+
+控制端显示租约、传输和移动端状态；访客端显示实时速度、接收字节数以及 SHA-256 校验回执。
+
+## 安全模型
+
+- 共享口令不会明文保存，桌面端使用 `scrypt` 加盐哈希。
+- 访问链接令牌使用本机密钥和 AES-256-GCM 生成，不包含真实文件路径。
+- 所有文件请求必须通过 Bearer Token 认证，并受口令有效期、客户端 IP 和访问模式约束。
+- 服务端会限制认证失败频率，降低局域网内的口令爆破风险。
+- 文件路径经过边界检查，访客不能跳出共享根目录。
+- 移动端访问默认关闭，公开 API 不返回宿主机物理路径。
+
+> **重要：** 当前传输通道是局域网 HTTP，不是端到端 TLS。请只在可信局域网、隔离网络或可信 VPN 中使用，不要把服务端口直接暴露到公网。
+
+## 技术栈
+
+- **桌面运行时：** Tauri 2
+- **本地服务：** Rust、Axum、Tokio
+- **界面：** React 19、TypeScript、Tailwind CSS 4
+- **安全与校验：** AES-256-GCM、scrypt、SHA-256、MD5
+- **打包：** macOS APFS DMG、Windows NSIS、GitHub Actions
+
+## 本地开发
+
+### 环境要求
+
+- Node.js 24+
+- Rust stable
+- macOS 或 Windows 的 [Tauri 2 系统依赖](https://v2.tauri.app/start/prerequisites/)
 
 ```bash
+git clone https://github.com/huoxuhaohaode/intranet-flash-transfer.git
+cd intranet-flash-transfer
 npm install
-npm run dev
-npm run electron:dev
+npm run tauri:dev
 ```
 
-开发模式下需要同时运行 Vite 和 Electron。管理端必须在 Electron 窗口中打开，因为真实目录、网卡和服务控制都只通过 `electron-preload.cjs` 暴露给桌面窗口。
-
-## Windows 打包
+## 构建
 
 ```bash
+# 类型检查
 npm run lint
+
+# macOS DMG（只能在 macOS 构建）
+npm run tauri:build:mac
+
+# Windows NSIS EXE（只能在 Windows 构建）
 npm run tauri:build:win
 ```
 
-Tauri 的 NSIS 安装包必须在 Windows 主机上生成。仓库内的 GitHub Actions 会在 Windows Runner 中构建 `.exe`。首次在局域网监听端口时，Windows 防火墙可能弹出授权提示；这是真实内网访问所必需的系统行为。
-
-## macOS DMG 打包
-
-DMG 需要在 macOS 主机上生成：
-
-```bash
-npm install
-npm run lint
-npm run tauri:build:mac
-```
-
-正式 DMG 输出到 `release-tauri/`。打包脚本会进行本地签名校验，使用 APFS 镜像，并在镜像内放置 `/Applications` 拖放链接。同一版本只允许生成一个正式 DMG。
+推送版本标签后，GitHub Actions 会同时构建两个平台并发布 Release。
 
 ## 版本规则
 
-每次功能迭代执行：
+每次迭代先运行：
 
 ```bash
 npm run version:next
 ```
 
-版本按十进制逐位进位：`0.2.1`、`0.2.2` … `0.2.9`、`0.3.0`。版本号会同步写入 npm、Cargo 和 Tauri 配置。发布时创建对应标签，例如 `v0.2.1`，GitHub Actions 会同时构建 macOS DMG 和 Windows NSIS EXE，并上传到同一个 GitHub Release。
+版本按十进制进位：`0.2.1`、`0.2.2` … `0.2.9`、`0.3.0`。脚本会同步更新 npm、Cargo 和 Tauri 配置；同一版本不会重复生成正式 DMG。
 
-## 使用流程
+## 项目状态
 
-1. 在桌面管理端选择真实网卡 IP 和端口，应用并重启 HTTP 服务。
-2. 选择要共享的本机文件或目录，设置共享别名、访问口令、有效期、访问模式、移动端访问开关和 IP 白名单。多个特定 IP 可用逗号、空格或换行分隔。
-3. 复制真实访问链接，发给同一局域网内的授权设备；如存在多块网卡，可复制全部备用地址。
-4. 访客端输入口令后建立独占只读会话。
-5. 管理端可一键为有效期加时，不重置口令、不释放独占锁、不影响正在下载的访客任务。
-6. 访客下载单文件或 ZIP 包，完成后检查传输回执中的 SHA-256 校验状态。
+项目仍处于早期阶段，欢迎通过 [Issues](https://github.com/huoxuhaohaode/intranet-flash-transfer/issues) 提交使用问题和改进建议。
 
-## 安全边界
+当前计划包括：
 
-- 渲染层没有 Node.js 文件系统权限，只能调用 `electron-preload.cjs` 暴露的白名单 IPC。
-- 访客端公开 API 不返回宿主机物理路径。
-- 路径访问通过服务端 `safeResolve` 限制在共享目录内。
-- 桌面访客 HTTP 入口、React 静态资源和下载 API 需要桌面环境 gate；手机/平板只有在对应共享显式开启“允许移动端访问”后才能认证、预览和下载，默认关闭。
-- 所有下载接口都需要 Bearer Token，Token 由口令认证后生成，并受口令有效期、客户端 IP、浏览器指纹和租约限制。
-- 口令认证和桌面环境证明都有服务端限速，连续失败会暂时锁定，降低口令爆破与伪造证明尝试。
-- IP 白名单支持多个精确 IP，并兼容 CIDR 和通配段；一对多模式只放开并发人数，不绕过白名单、口令或只读校验。
+- Intel Mac 与更多 Windows 架构的正式构建
+- 可选 HTTPS 传输与证书指纹确认
+- 更完整的访客预览类型
+- 自动更新与签名发布链路
+
+## 致谢
+
+README 的信息组织参考了 [LocalSend](https://github.com/localsend/localsend)、[PairDrop](https://github.com/schlagmichdoch/PairDrop) 和 [croc](https://github.com/schollz/croc) 等局域网传输项目。

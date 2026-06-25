@@ -1,0 +1,15 @@
+node_modules/
+build/
+dist/
+coverage/
+release/
+release-tauri/
+src-tauri/target/
+dist-probe*/
+smoke-appdata/
+smoke-download/
+smoke-share/
+.DS_Store
+*.log
+.env*
+!.env.example

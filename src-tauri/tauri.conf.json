@@ -1,0 +1,50 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "内网闪传",
+  "version": "0.2.1",
+  "identifier": "com.codex.intranetflashtransfer",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "beforeBuildCommand": "npm run build",
+    "devUrl": "http://localhost:3000",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "内网闪传 - 真实文件传输控制器",
+        "width": 1320,
+        "height": 880,
+        "minWidth": 1060,
+        "minHeight": 680
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["dmg"],
+    "category": "Utility",
+    "icon": ["../assets/icon.png", "../assets/icon.ico", "../assets/icon.icns"],
+    "resources": ["../dist"],
+    "macOS": {
+      "dmg": {
+        "windowSize": {
+          "width": 540,
+          "height": 380
+        },
+        "appPosition": {
+          "x": 145,
+          "y": 190
+        },
+        "applicationFolderPosition": {
+          "x": 395,
+          "y": 190
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Intranet secure transfer icon">
+  <rect x="28" y="28" width="456" height="456" rx="96" fill="#0b1020"/>
+  <rect x="48" y="48" width="416" height="416" rx="76" fill="#121a2e"/>
+  <path d="M118 146v68h276v-68M118 146h0M168 146h0M344 146h0M394 146h0" stroke="#35d2ff" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M84 304h136M194 268l56 36-56 36M428 304H292M318 268l-56 36 56 36" stroke="#35d2ff" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <path d="M256 104l94 34-16 148-78 74-78-74-16-148z" fill="#d8f3ff"/>
+  <path d="M256 128l68 25-12 119-56 54-56-54-12-119z" fill="#0b1020"/>
+  <path d="M256 142l50 20-10 96-40 42-40-42-10-96z" fill="#55f29d"/>
+  <path d="M228 226l22 22 44-46" stroke="#0b1020" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <g>
+    <rect x="96" y="358" width="32" height="24" rx="5" fill="#ffcf5a"/>
+    <rect x="140" y="358" width="32" height="24" rx="5" fill="#55f29d"/>
+    <rect x="184" y="358" width="32" height="24" rx="5" fill="#35d2ff"/>
+    <rect x="296" y="358" width="32" height="24" rx="5" fill="#35d2ff"/>
+    <rect x="340" y="358" width="32" height="24" rx="5" fill="#55f29d"/>
+    <rect x="384" y="358" width="32" height="24" rx="5" fill="#ffcf5a"/>
+  </g>
+</svg>

@@ -14,7 +14,7 @@
   ![Tauri](https://img.shields.io/badge/Tauri-2-24C8DB?style=flat-square&logo=tauri&logoColor=white)
   ![Platforms](https://img.shields.io/badge/platform-macOS%20%7C%20Windows-25313C?style=flat-square)
 
-  [下载最新版](https://github.com/huoxuhaohaode/intranet-flash-transfer/releases/latest) · [查看更新记录](CHANGELOG.md) · [反馈问题](https://github.com/huoxuhaohaode/intranet-flash-transfer/issues)
+  [下载最新版](https://github.com/huoxuhaohaode/intranet-flash-transfer/releases/latest) · [查看更新记录](CHANGELOG.md) · [反馈问题](https://github.com/huoxuhaohaode/intranet-flash-transfer/issues/new/choose) · [交流讨论](https://github.com/huoxuhaohaode/intranet-flash-transfer/discussions)
 </div>
 
 <p align="center">
@@ -136,7 +136,9 @@ npm run version:next
 
 ## 项目状态
 
-项目仍处于早期阶段，欢迎通过 [Issues](https://github.com/huoxuhaohaode/intranet-flash-transfer/issues) 提交使用问题和改进建议。
+项目仍处于早期阶段。登录 GitHub 后，可通过[反馈表单](https://github.com/huoxuhaohaode/intranet-flash-transfer/issues/new/choose)提交 Bug 或功能建议；一般使用问题可前往 [Discussions](https://github.com/huoxuhaohaode/intranet-flash-transfer/discussions)交流。
+
+> GitHub 不允许匿名提交 Issue 或 Discussion，未登录访客需要先登录 GitHub 账号。
 
 当前计划包括：
 

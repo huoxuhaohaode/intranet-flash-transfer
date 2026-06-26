@@ -14,7 +14,7 @@
   ![Tauri](https://img.shields.io/badge/Tauri-2-24C8DB?style=flat-square&logo=tauri&logoColor=white)
   ![Platforms](https://img.shields.io/badge/platform-macOS%20%7C%20Windows-25313C?style=flat-square)
 
-  [Download](https://github.com/huoxuhaohaode/intranet-flash-transfer/releases/latest) · [Changelog](CHANGELOG.md) · [Report an issue](https://github.com/huoxuhaohaode/intranet-flash-transfer/issues)
+  [Download](https://github.com/huoxuhaohaode/intranet-flash-transfer/releases/latest) · [Changelog](CHANGELOG.md) · [Report an issue](https://github.com/huoxuhaohaode/intranet-flash-transfer/issues/new/choose) · [Discussions](https://github.com/huoxuhaohaode/intranet-flash-transfer/discussions)
 </div>
 
 <p align="center">
@@ -136,7 +136,9 @@ Versions use decimal carry: `0.2.1`, `0.2.2` … `0.2.9`, `0.3.0`. The script up
 
 ## Project status
 
-This project is still at an early stage. Bug reports and improvement ideas are welcome in [Issues](https://github.com/huoxuhaohaode/intranet-flash-transfer/issues).
+This project is still at an early stage. After signing in to GitHub, use the [guided issue forms](https://github.com/huoxuhaohaode/intranet-flash-transfer/issues/new/choose) for bugs and feature requests, or visit [Discussions](https://github.com/huoxuhaohaode/intranet-flash-transfer/discussions) for general questions.
+
+> GitHub does not allow anonymous Issue or Discussion submissions. Visitors must sign in with a GitHub account first.
 
 Current roadmap:
 

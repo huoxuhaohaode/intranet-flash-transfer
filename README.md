@@ -18,7 +18,6 @@
 </div>
 
 <p align="center">
-  <img src="docs/images/control-center.jpg" alt="内网闪传控制端主页" width="100%">
 </p>
 
 ## 它解决什么问题？

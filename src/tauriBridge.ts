@@ -15,7 +15,6 @@ async function choosePath(directory: boolean) {
 
 if (isTauriRuntime && !window.lanTransfer) {
   window.desktopEnvironment = {
-    isElectron: false,
     platform: 'tauri',
     version: '2',
   };
@@ -24,9 +23,16 @@ if (isTauriRuntime && !window.lanTransfer) {
     getNetworkInterfaces: () => invoke('get_network_interfaces'),
     getServerState: () => invoke('get_server_state'),
     setServerConfig: config => invoke('set_server_config', { config }),
+    generateSelfSignedCert: () => invoke('generate_self_signed_cert'),
+    listAuditEvents: () => invoke('list_audit_events'),
+    exportAuditCsv: () => invoke('export_audit_csv'),
     chooseDirectory: () => choosePath(true),
     chooseFile: () => choosePath(false),
     listShares: () => invoke('list_shares'),
+    listReceivedFiles: shareId => invoke('list_received_files', { shareId }),
+    deleteReceivedFile: (shareId, relativePath) => invoke('delete_received_file', { shareId, relativePath }),
+    listDevices: () => invoke('list_devices'),
+    kickDevice: token => invoke('kick_device', { token }),
     createShare: payload => invoke('create_share', { payload }),
     updateShare: (id, patch) => invoke('update_share', { id, patch }),
     extendShareExpiry: (id, addMs) => invoke('extend_share_expiry', { id, addMs }),

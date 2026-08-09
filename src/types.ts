@@ -32,6 +32,12 @@ export interface ShareRecord {
   passcodeExpiresAt?: string;
   passcodeDuration?: '1h' | '4h' | '24h' | '7d' | 'never';
   ipWhitelist?: string;
+  allowUpload?: boolean;
+  receiveDir?: string | null;
+  speedLimitMbps?: number;
+  oneTimeAccess?: boolean;
+  uploadMaxBytes?: number;
+  uploadExtensions?: string | null;
 }
 
 export interface NetworkInterfaceInfo {
@@ -40,6 +46,8 @@ export interface NetworkInterfaceInfo {
   address: string;
   cidr: string;
   mac: string;
+  /** 蓝牙个人热点（PAN）等蓝牙网络接口为 true */
+  bluetooth?: boolean;
 }
 
 export interface ServerLease {
@@ -50,13 +58,33 @@ export interface ServerLease {
 
 export interface ServerTransfer {
   id: number;
-  type: 'download' | 'archive';
+  type: 'download' | 'archive' | 'upload';
   shareId: string;
   shareName: string;
   clientIp: string;
   fileName: string;
   sizeBytes: number;
   startedAt: string;
+}
+
+export interface AuditEvent {
+  timestamp: string;
+  kind: string;
+  shareName: string;
+  clientIp: string;
+  fileName: string;
+  sizeBytes: number;
+  outcome: string;
+  detail: string;
+}
+
+export interface DeviceInfo {
+  token: string;
+  shareId: string;
+  shareName: string;
+  clientIp: string;
+  fingerprint: string;
+  expiresAt: number;
 }
 
 export interface RuntimeIdleGuard {
@@ -71,6 +99,10 @@ export interface ServerState {
   hostIp: string;
   bindAddress: string;
   port: number;
+  downloadSpeedLimitMbps: number;
+  tlsEnabled: boolean;
+  tlsCertPath?: string;
+  tlsKeyPath?: string;
   error: string;
   urlBase: string;
   accessUrls: string[];
@@ -85,6 +117,7 @@ export interface PublicShareInfo {
   description: string;
   accessMode?: 'exclusive' | 'multi';
   allowMobileAccess?: boolean;
+  uploadAllowed?: boolean;
   passcodeHint: string;
   passcodeExpiresAt?: string;
   ipWhitelist?: string;
@@ -108,7 +141,7 @@ export interface AuthResponse {
 }
 
 export interface PreviewResult {
-  type: 'text' | 'binary' | 'folder';
+  type: 'text' | 'binary' | 'folder' | 'image' | 'video' | 'audio';
   content: string;
   truncated?: boolean;
 }
@@ -120,8 +153,15 @@ export interface HashResult {
   md5: string;
 }
 
+export interface UploadReceipt {
+  name: string;
+  relativePath: string;
+  sizeBytes: number;
+  sha256: string;
+  md5: string;
+}
+
 export interface DesktopEnvironment {
-  isElectron: boolean;
   platform: string;
   version: string;
 }
@@ -129,7 +169,17 @@ export interface DesktopEnvironment {
 export interface LanTransferBridge {
   getNetworkInterfaces(): Promise<NetworkInterfaceInfo[]>;
   getServerState(): Promise<ServerState>;
-  setServerConfig(config: { hostIp: string; port: number }): Promise<ServerState>;
+  setServerConfig(config: {
+    hostIp: string;
+    port: number;
+    downloadSpeedLimitMbps?: number;
+    tlsEnabled?: boolean;
+    tlsCertPath?: string;
+    tlsKeyPath?: string;
+  }): Promise<ServerState>;
+  generateSelfSignedCert(): Promise<{ certPath: string; keyPath: string }>;
+  listAuditEvents(): Promise<AuditEvent[]>;
+  exportAuditCsv(): Promise<string>;
   chooseDirectory(): Promise<string | null>;
   chooseFile(): Promise<string | null>;
   listShares(): Promise<ShareRecord[]>;
@@ -143,16 +193,31 @@ export interface LanTransferBridge {
     ipWhitelist?: string;
     accessMode?: ShareRecord['accessMode'];
     allowMobileAccess?: boolean;
+    allowUpload?: boolean;
+    receiveDir?: string;
+    speedLimitMbps?: number;
+    oneTimeAccess?: boolean;
+    uploadMaxBytes?: number;
+    uploadExtensions?: string;
   }): Promise<ShareRecord>;
   updateShare(
     id: string,
-    patch: Partial<Pick<ShareRecord, 'description' | 'passcodeExpiresAt' | 'passcodeDuration' | 'ipWhitelist' | 'accessMode' | 'allowMobileAccess'>> & {
+    patch: Partial<
+      Pick<
+        ShareRecord,
+        'description' | 'passcodeExpiresAt' | 'passcodeDuration' | 'ipWhitelist' | 'accessMode' | 'allowMobileAccess' | 'allowUpload' | 'receiveDir' | 'speedLimitMbps' | 'oneTimeAccess' | 'uploadMaxBytes' | 'uploadExtensions'
+      >
+    > & {
       passcode?: string;
     },
   ): Promise<ShareRecord>;
   extendShareExpiry(id: string, addMs: number): Promise<ShareRecord>;
   deleteShare(id: string): Promise<boolean>;
   listFiles(shareId: string): Promise<PhysicalFile[]>;
+  listReceivedFiles(shareId: string): Promise<PhysicalFile[]>;
+  deleteReceivedFile(shareId: string, relativePath: string): Promise<boolean>;
+  listDevices(): Promise<DeviceInfo[]>;
+  kickDevice(token: string): Promise<boolean>;
   previewFile(shareId: string, relativePath: string): Promise<PreviewResult>;
   forceRelease(shareId: string): Promise<ServerState>;
   copyText(text: string): void;

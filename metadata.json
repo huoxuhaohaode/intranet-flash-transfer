@@ -1,6 +1,0 @@
-{
-  "name": "内网闪传",
-  "description": "专为局域网/内网环境打造的高稳定性文件夹共享与直连安全传输系统。支持断点续传、独占访问锁控制、自动安全密钥效期清除与物理映射管理。",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}

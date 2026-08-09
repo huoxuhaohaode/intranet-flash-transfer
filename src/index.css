@@ -183,9 +183,9 @@ a {
 .app-panel {
   overflow: hidden;
   border-color: #cbd7dc !important;
-  border-radius: 8px !important;
+  border-radius: 14px !important;
   background: rgba(255, 255, 255, 0.96) !important;
-  box-shadow: 0 12px 30px rgba(20, 44, 55, 0.075) !important;
+  box-shadow: 0 1px 2px rgba(20, 44, 55, 0.05), 0 12px 34px rgba(20, 44, 55, 0.08) !important;
   animation: panel-in 480ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
@@ -198,7 +198,7 @@ a {
 .section-title {
   min-height: 58px;
   border-color: #d9e2e6 !important;
-  background: #f7fafb;
+  background: linear-gradient(180deg, #fafcfd, #f4f8f9);
 }
 
 .section-title h2 {
@@ -215,7 +215,7 @@ a {
   min-height: 42px;
   color: #13232b;
   border-color: #bccbd1 !important;
-  border-radius: 6px !important;
+  border-radius: 10px !important;
   background-color: #ffffff !important;
   transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
 }
@@ -239,6 +239,15 @@ a {
 .app-shell a[download] {
   cursor: pointer;
   transition: transform 150ms ease, border-color 150ms ease, color 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
+}
+
+.app-shell button:focus-visible,
+.app-shell a[download]:focus-visible,
+.app-shell input:focus-visible,
+.app-shell select:focus-visible,
+.app-shell textarea:focus-visible {
+  outline: 2px solid #13aa96;
+  outline-offset: 2px;
 }
 
 .app-shell button:hover:not(:disabled),
@@ -387,7 +396,16 @@ a {
   overflow: hidden;
   min-height: 82px;
   border-color: #d4dfe3 !important;
+  border-radius: 12px !important;
   background: #f8fafb;
+  box-shadow: 0 8px 20px rgba(20, 44, 55, 0.05);
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.metric-grid > div:hover,
+.visitor-metrics > div:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(20, 44, 55, 0.09);
 }
 
 .metric-grid > div::before,
@@ -531,8 +549,16 @@ a {
 }
 
 .visitor-metrics > div {
-  border-radius: 8px !important;
+  border-radius: 12px !important;
   box-shadow: 0 10px 24px rgba(20, 44, 55, 0.06) !important;
+}
+
+.visitor-shell .md\:hidden .divide-y > div {
+  transition: background-color 150ms ease;
+}
+
+.visitor-shell .md\:hidden .divide-y > div:hover {
+  background: #f2faf8;
 }
 
 .transfer-track {
@@ -573,6 +599,199 @@ a {
     linear-gradient(rgba(73, 151, 145, 0.08) 1px, transparent 1px),
     linear-gradient(90deg, rgba(73, 151, 145, 0.08) 1px, transparent 1px);
   background-size: 20px 20px;
+}
+
+/* ---------- 深色模式 ---------- */
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+[data-theme="dark"] :root,
+[data-theme="dark"] body {
+  color: #dbe7eb !important;
+  background: #0b1116 !important;
+}
+
+[data-theme="dark"] .app-shell {
+  background: #0b1116 !important;
+}
+
+[data-theme="dark"] .app-shell::before {
+  opacity: 0.18;
+}
+
+[data-theme="dark"] .app-panel {
+  border-color: #223039 !important;
+  background: #111a21 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 12px 34px rgba(0, 0, 0, 0.35) !important;
+}
+
+[data-theme="dark"] .section-title {
+  border-color: #223039 !important;
+  background: linear-gradient(180deg, #141f27, #10181f);
+}
+
+[data-theme="dark"] .section-title h2 {
+  color: #eaf3f6 !important;
+}
+
+[data-theme="dark"] .app-shell form input:not([type="checkbox"]),
+[data-theme="dark"] .app-shell form select,
+[data-theme="dark"] .app-shell form textarea {
+  color: #dbe7eb;
+  border-color: #2b3b45 !important;
+  background-color: #0f171d !important;
+}
+
+[data-theme="dark"] .app-shell form input:disabled,
+[data-theme="dark"] .app-shell form select:disabled,
+[data-theme="dark"] .app-shell form textarea:disabled {
+  color: #61737c;
+  background: #16212a !important;
+}
+
+[data-theme="dark"] .app-shell button.border-slate-300,
+[data-theme="dark"] .app-shell a.border-slate-300 {
+  color: #c3d3d9;
+  border-color: #2e404a !important;
+  background: #14202a;
+}
+
+[data-theme="dark"] .app-shell button.border-slate-300:hover:not(:disabled),
+[data-theme="dark"] .app-shell a.border-slate-300:hover {
+  color: #7ce8d6;
+  border-color: #2f8f80 !important;
+  background: #122620;
+}
+
+[data-theme="dark"] .text-slate-950 {
+  color: #e8f1f4 !important;
+}
+
+[data-theme="dark"] .text-slate-900 {
+  color: #dce8ec !important;
+}
+
+[data-theme="dark"] .text-slate-700,
+[data-theme="dark"] .text-slate-600 {
+  color: #9db0b9 !important;
+}
+
+[data-theme="dark"] .text-slate-500,
+[data-theme="dark"] .text-slate-400 {
+  color: #71858e !important;
+}
+
+[data-theme="dark"] .bg-white {
+  background-color: #111a21 !important;
+}
+
+[data-theme="dark"] .bg-slate-50,
+[data-theme="dark"] .bg-slate-100 {
+  background-color: #14202a !important;
+}
+
+[data-theme="dark"] .border-slate-100,
+[data-theme="dark"] .border-slate-200 {
+  border-color: #223039 !important;
+}
+
+[data-theme="dark"] .border-slate-300 {
+  border-color: #2e404a !important;
+}
+
+[data-theme="dark"] .data-table thead {
+  color: #8aa0aa !important;
+  background: #16212a !important;
+}
+
+[data-theme="dark"] .data-table tbody tr {
+  border-color: #223039 !important;
+}
+
+[data-theme="dark"] .data-table tbody tr:hover {
+  background: #152622;
+}
+
+[data-theme="dark"] .metric-grid > div,
+[data-theme="dark"] .visitor-metrics > div,
+[data-theme="dark"] .overview-view > div > div > .rounded-xl,
+[data-theme="dark"] .overview-view .rounded-xl.border-slate-200 {
+  border-color: #223039 !important;
+  background: #111a21 !important;
+}
+
+[data-theme="dark"] .toggle-row {
+  border-color: #2b3b45 !important;
+  background: #14202a !important;
+}
+
+[data-theme="dark"] .toggle-control {
+  border-color: #40545f;
+  background: #2a3a44;
+}
+
+[data-theme="dark"] .admin-tabs {
+  border-color: #223039 !important;
+  background: #0f171d !important;
+}
+
+[data-theme="dark"] .admin-tabs button {
+  color: #8aa0aa;
+}
+
+[data-theme="dark"] .admin-tabs button:hover:not(.bg-slate-950) {
+  background: #1a2730;
+  color: #dbe7eb;
+}
+
+[data-theme="dark"] .visitor-shell .md\:hidden .divide-y > div {
+  border-color: #223039 !important;
+}
+
+[data-theme="dark"] .visitor-shell .md\:hidden .divide-y > div:hover {
+  background: #14231f;
+}
+
+[data-theme="dark"] .transfer-track {
+  background: #223039 !important;
+}
+
+[data-theme="dark"] .access-panel .space-y-3 > div:not(:last-child) {
+  border-color: #223039 !important;
+  background: #14202a !important;
+}
+
+[data-theme="dark"] .share-link-card .text-slate-500,
+[data-theme="dark"] .secure-link .text-slate-500 {
+  color: #7f959e !important;
+}
+
+[data-theme="dark"] .app-notice {
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .app-notice.border-emerald-500 {
+  color: #a7f3e6;
+  background: #0e2a24;
+}
+
+[data-theme="dark"] .app-notice.border-red-500 {
+  color: #ffd0c7;
+  background: #2a1410;
+}
+
+[data-theme="dark"] .app-notice.border-amber-500 {
+  color: #fde68a;
+  background: #2a2310;
+}
+
+[data-theme="dark"] .overview-view .bg-emerald-50 {
+  background: #0e2a24 !important;
+}
+
+[data-theme="dark"] .overview-view .border-emerald-300 {
+  border-color: #2f8f80 !important;
 }
 
 @keyframes panel-in {

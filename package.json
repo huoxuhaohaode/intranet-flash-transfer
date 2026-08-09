@@ -2,24 +2,16 @@
   "name": "intranet-flash-transfer",
   "private": true,
   "description": "内网安全数据传输控制器",
-  "author": "Admin",
-  "version": "0.2.1",
+  "author": "Intranet Flash Transfer Team",
+  "version": "0.2.2",
   "type": "module",
-  "main": "electron-main.cjs",
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
     "prebuild": "node generate-icon.cjs",
     "build": "vite build",
     "preview": "vite preview",
-    "clean": "node -e \"const fs=require('fs'); ['dist','release','server.js'].forEach(p=>fs.rmSync(p,{recursive:true,force:true}))\"",
+    "clean": "node -e \"const fs=require('fs'); ['dist','release','release-tauri'].forEach(p=>fs.rmSync(p,{recursive:true,force:true}))\"",
     "lint": "tsc --noEmit",
-    "electron:dev": "set ELECTRON_DEV=true&& electron electron-main.cjs",
-    "electron:pack": "npm run build && electron-builder",
-    "mac:check": "node scripts/validate-macos-build-inputs.cjs",
-    "mac:check:strict": "node scripts/validate-macos-build-inputs.cjs --require-icns",
-    "mac:icon": "node generate-icon.cjs && node scripts/prepare-macos-icon.cjs",
-    "electron:build:win": "npm run build && electron-builder --win",
-    "electron:build:mac": "node scripts/ensure-macos-build-host.cjs && npm run build && npm run mac:icon && npm run mac:check:strict && electron-builder --mac dmg",
     "tauri:dev": "tauri dev",
     "tauri:build": "tauri build",
     "tauri:build:mac": "node scripts/build-tauri-mac.cjs",
@@ -28,15 +20,13 @@
     "version:next": "node scripts/bump-version.cjs"
   },
   "dependencies": {
-    "@google/genai": "^2.4.0",
     "@tailwindcss/vite": "^4.1.14",
     "@tauri-apps/api": "^2.11.1",
     "@tauri-apps/plugin-clipboard-manager": "^2.3.2",
     "@tauri-apps/plugin-dialog": "^2.7.1",
+    "@tauri-apps/plugin-updater": "^2.10.1",
     "@types/qrcode": "^1.5.6",
     "@vitejs/plugin-react": "^5.0.4",
-    "dotenv": "^17.2.3",
-    "express": "^4.21.2",
     "lucide-react": "^0.546.0",
     "motion": "^12.23.24",
     "qrcode": "^1.5.4",
@@ -46,77 +36,12 @@
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2.11.3",
-    "@types/express": "^4.17.21",
     "@types/node": "^22.14.0",
     "autoprefixer": "^10.4.21",
-    "electron": "^42.4.0",
-    "electron-builder": "^26.15.2",
     "esbuild": "^0.25.0",
     "tailwindcss": "^4.1.14",
     "tsx": "^4.21.0",
     "typescript": "~5.8.2",
     "vite": "^6.2.3"
-  },
-  "build": {
-    "appId": "com.codex.intranetflashtransfer",
-    "productName": "内网闪传",
-    "asar": true,
-    "npmRebuild": false,
-    "directories": {
-      "output": "release"
-    },
-    "files": [
-      "dist/**/*",
-      "assets/**/*",
-      "electron-main.cjs",
-      "electron-preload.cjs",
-      "package.json"
-    ],
-    "extraResources": [
-      {
-        "from": "electron-preload.cjs",
-        "to": "electron-preload.cjs"
-      }
-    ],
-    "win": {
-      "icon": "assets/icon.ico",
-      "target": [
-        "nsis",
-        "portable"
-      ]
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "createDesktopShortcut": true,
-      "shortcutName": "内网闪传"
-    },
-    "mac": {
-      "icon": "assets/icon.icns",
-      "target": [
-        "dmg"
-      ],
-      "category": "public.app-category.utilities"
-    },
-    "dmg": {
-      "title": "内网闪传 Installer",
-      "window": {
-        "width": 540,
-        "height": 380
-      },
-      "contents": [
-        {
-          "x": 145,
-          "y": 190,
-          "type": "file"
-        },
-        {
-          "x": 395,
-          "y": 190,
-          "type": "link",
-          "path": "/Applications"
-        }
-      ]
-    }
   }
 }

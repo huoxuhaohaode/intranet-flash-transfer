@@ -18,14 +18,24 @@ jobs:
         include:
           - name: macOS
             os: macos-14
-            command: npm run tauri:build:mac
+            suffix: darwin-aarch64
+            command: npx tauri build --bundles app,dmg
             artifact: macos-dmg
-            path: release-tauri/*.dmg
+            path: |
+              src-tauri/target/release/bundle/dmg/*.dmg
+              src-tauri/target/release/bundle/macos/*.app.tar.gz
+              src-tauri/target/release/bundle/macos/*.app.tar.gz.sig
+              src-tauri/target/release/bundle/updater/**
           - name: Windows
             os: windows-latest
+            suffix: windows-x86_64
             command: npm run tauri:build:win
             artifact: windows-exe
-            path: src-tauri/target/release/bundle/nsis/*.exe
+            path: |
+              src-tauri/target/release/bundle/nsis/*.exe
+              src-tauri/target/release/bundle/nsis/*.nsis.zip
+              src-tauri/target/release/bundle/nsis/*.nsis.zip.sig
+              src-tauri/target/release/bundle/updater/**
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -41,8 +51,43 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Configure updater signing
+        env:
+          UPDATER_PRIVATE_KEY: ${{ secrets.UPDATER_PRIVATE_KEY }}
+          UPDATER_PRIVATE_KEY_PASSWORD: ${{ secrets.UPDATER_PRIVATE_KEY_PASSWORD }}
+        run: |
+          if [ -n "$UPDATER_PRIVATE_KEY" ]; then
+            echo "TAURI_SIGNING_PRIVATE_KEY=$UPDATER_PRIVATE_KEY" >> "$GITHUB_ENV"
+            echo "TAURI_SIGNING_PRIVATE_KEY_PASSWORD=$UPDATER_PRIVATE_KEY_PASSWORD" >> "$GITHUB_ENV"
+          fi
+        shell: bash
+
+      - name: Configure Rust path remapping
+        shell: bash
+        run: |
+          CARGO_HOME_DIR="${CARGO_HOME:-$HOME/.cargo}"
+          echo "RUSTFLAGS=--remap-path-prefix $GITHUB_WORKSPACE=/build/app --remap-path-prefix $CARGO_HOME_DIR/registry=/build/cargo" >> "$GITHUB_ENV"
+
       - name: Build installer
         run: ${{ matrix.command }}
+
+      - name: Generate updater manifest
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        run: |
+          if [ "${{ matrix.name }}" = "macOS" ]; then
+            ASSET=$(find src-tauri/target/release/bundle/macos -maxdepth 1 -name '*.app.tar.gz' | head -n 1)
+          else
+            ASSET=$(find src-tauri/target/release/bundle/nsis -maxdepth 1 -name '*.nsis.zip' | head -n 1)
+          fi
+          SIG="$ASSET.sig"
+          node scripts/generate-updater-manifest.cjs \
+            --target "${{ matrix.suffix }}" \
+            --asset-path "$ASSET" \
+            --signature-file "$SIG" \
+            --repository "${{ github.repository }}" \
+            --tag "${{ github.ref_name }}" \
+            --output "src-tauri/target/release/bundle/updater/latest-${{ matrix.suffix }}.json"
 
       - uses: actions/upload-artifact@v4
         with:

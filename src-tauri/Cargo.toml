@@ -1,8 +1,8 @@
 [package]
 name = "intranet-flash-transfer-tauri"
-version = "0.2.1"
+version = "0.2.2"
 description = "内网闪传"
-authors = ["Admin"]
+authors = ["Intranet Flash Transfer Team"]
 edition = "2021"
 
 [build-dependencies]
@@ -12,20 +12,24 @@ tauri-build = { version = "2", features = [] }
 aes-gcm = "0.10"
 anyhow = "1"
 axum = "0.7"
+axum-server = { version = "0.7", features = ["tls-rustls"] }
 base64 = "0.22"
 chrono = { version = "0.4", features = ["serde"] }
+futures-util = "0.3"
 get_if_addrs = "0.5"
 hex = "0.4"
 md5 = "0.7"
 mime_guess = "2"
 rand = "0.8"
+rcgen = "0.13"
 scrypt = "0.11"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 sha2 = "0.10"
-tauri = { version = "2", features = [] }
+tauri = { version = "2", features = ["protocol-asset"] }
 tauri-plugin-clipboard-manager = "2"
 tauri-plugin-dialog = "2"
+tauri-plugin-updater = "2"
 tokio = { version = "1", features = ["fs", "io-util", "macros", "rt-multi-thread", "sync", "time"] }
 tokio-util = { version = "0.7", features = ["io"] }
 tower-http = { version = "0.6", features = ["fs"] }

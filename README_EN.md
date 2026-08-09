@@ -18,7 +18,6 @@
 </div>
 
 <p align="center">
-  <img src="docs/images/control-center.jpg" alt="Intranet Flash Transfer control center" width="100%">
 </p>
 
 ## What is it for?

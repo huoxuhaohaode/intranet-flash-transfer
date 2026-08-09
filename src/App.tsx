@@ -216,6 +216,8 @@ function isImageFile(name: string) {
 
 function useDialogFocus(open: boolean, onClose: () => void) {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
   useEffect(() => {
     if (!open) return;
     const container = containerRef.current;
@@ -234,7 +236,7 @@ function useDialogFocus(open: boolean, onClose: () => void) {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         event.preventDefault();
-        onClose();
+        onCloseRef.current();
         return;
       }
       if (event.key !== 'Tab') return;
@@ -255,7 +257,7 @@ function useDialogFocus(open: boolean, onClose: () => void) {
       container.removeEventListener('keydown', onKeyDown);
       previous?.focus?.();
     };
-  }, [open, onClose]);
+  }, [open]);
   return containerRef;
 }
 

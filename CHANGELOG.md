@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.5
+
+- Fixed dialogs stealing focus back to the close button after every keystroke.
+
 ## 0.2.4
 
 - Fixed the create-share dialog being clipped: the panel can now scroll so the submit button is always reachable.

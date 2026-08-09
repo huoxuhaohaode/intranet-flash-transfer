@@ -70,14 +70,29 @@ jobs:
       - name: Build installer
         run: ${{ matrix.command }}
 
+      - name: Normalize artifact filenames
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        run: |
+          VERSION="$(node -p "require('./src-tauri/tauri.conf.json').version")"
+          cd src-tauri/target/release/bundle
+          if [ "${{ matrix.name }}" = "macOS" ]; then
+            mv "macos/内网闪传.app.tar.gz" "macos/lan-transfer-$VERSION-aarch64.app.tar.gz"
+            mv "macos/内网闪传.app.tar.gz.sig" "macos/lan-transfer-$VERSION-aarch64.app.tar.gz.sig"
+            mv "dmg/内网闪传_${VERSION}_aarch64.dmg" "dmg/lan-transfer-$VERSION-aarch64.dmg"
+          else
+            mv "nsis/内网闪传_${VERSION}_x64-setup.exe" "nsis/lan-transfer-$VERSION-x64-setup.exe"
+            mv "nsis/内网闪传_${VERSION}_x64-setup.exe.sig" "nsis/lan-transfer-$VERSION-x64-setup.exe.sig"
+          fi
+
       - name: Generate updater manifest
         if: startsWith(github.ref, 'refs/tags/')
         shell: bash
         run: |
           if [ "${{ matrix.name }}" = "macOS" ]; then
-            ASSET=$(find src-tauri/target/release/bundle/macos -maxdepth 1 -name '*.app.tar.gz' | head -n 1)
+            ASSET=$(find src-tauri/target/release/bundle/macos -maxdepth 1 -name 'lan-transfer-*.app.tar.gz' | head -n 1)
           else
-            ASSET=$(find src-tauri/target/release/bundle/nsis -maxdepth 1 -name '*-setup.exe' | head -n 1)
+            ASSET=$(find src-tauri/target/release/bundle/nsis -maxdepth 1 -name 'lan-transfer-*-setup.exe' | head -n 1)
           fi
           SIG="$ASSET.sig"
           node scripts/generate-updater-manifest.cjs \
@@ -108,4 +123,4 @@ jobs:
       - uses: softprops/action-gh-release@v2
         with:
           generate_release_notes: true
-          files: release-assets/*
+          files: release-assets/**

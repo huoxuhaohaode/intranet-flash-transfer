@@ -1,6 +1,6 @@
 [package]
 name = "intranet-flash-transfer-tauri"
-version = "0.2.2"
+version = "0.2.3"
 description = "内网闪传"
 authors = ["Intranet Flash Transfer Team"]
 edition = "2021"

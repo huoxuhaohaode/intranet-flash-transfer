@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.3
+
+- Removed the in-app update check button; downloads are handled from GitHub Releases.
+- Added UI screenshots to the project homepage.
+
 ## 0.2.2
 
 - Added accessibility deep-polish: focus traps, skip links, ARIA labels, live regions and keyboard-friendly dialogs.

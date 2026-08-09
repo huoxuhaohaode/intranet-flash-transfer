@@ -58,7 +58,6 @@ import type {
 } from './types';
 import { sha256Bytes } from './utils/hash';
 import { convertFileSrc } from '@tauri-apps/api/core';
-import { check as checkForUpdate } from '@tauri-apps/plugin-updater';
 import { useI18n } from './i18n';
 
 type NoticeTone = 'info' | 'ok' | 'warn' | 'error';
@@ -663,22 +662,6 @@ function AdminView() {
     }
   }
 
-  async function checkForUpdates() {
-    try {
-      const update = await checkForUpdate();
-      if (!update) {
-        setAutoNotice({ tone: 'ok', text: '当前已是最新版本。' });
-        return;
-      }
-      const confirmed = window.confirm(`发现新版本 ${update.version}，是否下载并安装？`);
-      if (!confirmed) return;
-      await update.downloadAndInstall();
-      setAutoNotice({ tone: 'ok', text: '更新已下载安装，应用即将重启。' });
-    } catch (error) {
-      setAutoNotice({ tone: 'warn', text: `检查更新失败：${(error as Error).message}` });
-    }
-  }
-
   async function chooseDirectory() {
     const directory = await bridge!.chooseDirectory();
     if (directory) setShareForm(current => ({ ...current, localPath: directory }));
@@ -945,14 +928,6 @@ function AdminView() {
               className="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-slate-950 px-3 py-2 text-sm font-bold text-white"
             >
               {locale === 'zh' ? 'EN' : '中文'}
-            </button>
-            <button
-              type="button"
-              onClick={() => void checkForUpdates()}
-              className="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-slate-950 px-3 py-2 text-sm font-bold text-white"
-            >
-              <RefreshCw className="h-4 w-4" />
-              检查更新
             </button>
           </div>
         </div>

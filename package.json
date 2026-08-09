@@ -3,7 +3,7 @@
   "private": true,
   "description": "内网安全数据传输控制器",
   "author": "Intranet Flash Transfer Team",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "type": "module",
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",

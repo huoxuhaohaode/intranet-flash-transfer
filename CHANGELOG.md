@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.4
+
+- Fixed the create-share dialog being clipped: the panel can now scroll so the submit button is always reachable.
+- Service errors now show the concrete reason (for example when the port is already in use).
+
 ## 0.2.3
 
 - Removed the in-app update check button; downloads are handled from GitHub Releases.

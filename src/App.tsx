@@ -310,9 +310,10 @@ async function sha256Blob(blob: Blob) {
   return sha256Bytes(bytes);
 }
 
-function StatusPill({ ok, children }: { ok: boolean; children: ReactNode }) {
+function StatusPill({ ok, children, title }: { ok: boolean; children: ReactNode; title?: string }) {
   return (
     <span
+      title={title}
       className={`app-status inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-semibold ${
         ok ? 'border-emerald-300 bg-emerald-50 text-emerald-800' : 'border-red-300 bg-red-50 text-red-800'
       }`}
@@ -897,7 +898,9 @@ function AdminView() {
           </div>
           <div className="status-deck flex flex-wrap items-center gap-2">
             <StatusPill ok={server.running}>{server.running ? t('httpRunning') : t('httpStopped')}</StatusPill>
-            <StatusPill ok={!server.error}>{server.error ? t('serviceError') : t('noError')}</StatusPill>
+            <StatusPill ok={!server.error} title={server.error || undefined}>
+              {server.error ? t('serviceError') : t('noError')}
+            </StatusPill>
             <StatusPill ok={server.activeTransfers.length === 0}>
               {server.activeTransfers.length > 0 ? `${t('transferringN')} ${server.activeTransfers.length}` : t('noTransfers')}
             </StatusPill>

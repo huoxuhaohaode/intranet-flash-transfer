@@ -189,6 +189,25 @@ a {
   animation: panel-in 480ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+.app-panel.overflow-auto,
+.app-panel.overflow-x-auto,
+.app-panel.overflow-y-auto,
+.app-panel.overflow-visible {
+  overflow: visible;
+}
+
+.app-panel.overflow-auto {
+  overflow: auto;
+}
+
+.app-panel.overflow-x-auto {
+  overflow-x: auto;
+}
+
+.app-panel.overflow-y-auto {
+  overflow-y: auto;
+}
+
 .control-rail .app-panel:nth-child(2),
 .content-stack .app-panel:nth-child(2),
 .visitor-content .app-panel:nth-child(2) {
